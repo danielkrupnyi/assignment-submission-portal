@@ -4,7 +4,7 @@ import { submitAssignment } from '@/_actions';
 import { FormDataSchema } from '@/lib/form-schema';
 import { zodResolver } from '@hookform/resolvers/zod';
 import { useRouter } from 'next/navigation';
-import { FC, useState } from 'react';
+import { FC, useRef, useState } from 'react';
 import { SubmitHandler, useForm } from 'react-hook-form';
 import { z } from 'zod';
 
@@ -33,6 +33,12 @@ export const Form: FC<FormProps> = ({ levels }) => {
 	const [isSubmitting, setIsSubmitting] = useState(false);
 	const [error, setError] = useState<string | null>(null);
 
+	const dropdownRef = useRef<HTMLDetailsElement>(null);
+
+	const handleLevelClick = () => {
+		dropdownRef.current?.removeAttribute('open');
+	};
+
 	const onSubmit: SubmitHandler<Inputs> = async formData => {
 		try {
 			setIsSubmitting(true);
@@ -45,7 +51,6 @@ export const Form: FC<FormProps> = ({ levels }) => {
 			} else {
 				reset();
 				setSelectedLevel('Choose an option');
-				console.log('Form submitted successfully');
 				router.push('/thank-you');
 			}
 		} catch {
@@ -114,14 +119,10 @@ export const Form: FC<FormProps> = ({ levels }) => {
 
 			<fieldset className='fieldset'>
 				<legend className='fieldset-legend'>Candidate Level</legend>
-				<div className='dropdown'>
-					<div tabIndex={0} role='button' className='btn btn-block'>
-						{selectedLevel}
-					</div>
-					<ul
-						tabIndex={0}
-						className='dropdown-content menu bg-base-100 rounded-box z-1 w-52 p-2 shadow-sm'
-					>
+
+				<details className='dropdown dropdown-top' ref={dropdownRef}>
+					<summary className='btn btn-block'>{selectedLevel}</summary>
+					<ul className='menu dropdown-content border bg-base-100 rounded-box z-1 w-full p-2 shadow-sm'>
 						{levels &&
 							levels.map(level => (
 								<li key={level}>
@@ -129,6 +130,7 @@ export const Form: FC<FormProps> = ({ levels }) => {
 										onClick={() => {
 											setSelectedLevel(level);
 											setValue('candidate_level', level);
+											handleLevelClick();
 										}}
 									>
 										{level}
@@ -136,7 +138,7 @@ export const Form: FC<FormProps> = ({ levels }) => {
 								</li>
 							))}
 					</ul>
-				</div>
+				</details>
 				<input type='hidden' {...register('candidate_level')} />
 				{errors.candidate_level && (
 					<p className='text-error text-sm mt-1'>
