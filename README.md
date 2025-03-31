@@ -1,3 +1,8 @@
+# Assignment Submission Portal
+Frontend prototype for an Assignment Submission Portal created using Next.js (App Router). The portal will allow users to submit their assignments through a form. Upon successful submission, the user will be redirected to a Thank You Page confirming their submission.
+
+---
+
 This is a [Next.js](https://nextjs.org) project bootstrapped with [`create-next-app`](https://nextjs.org/docs/app/api-reference/cli/create-next-app).
 
 ## Getting Started
